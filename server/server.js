@@ -5,47 +5,30 @@ require('./config/config');
 const express = require('express');
 const app = express();
 
+// Using mongoose inside Node.js with `require()`
+const mongoose = require('./config/newmongoose'); // usar mi 'newmongoose' para evitar deprecation warnings
+
+
 //usar paquete npm body-parser (requiere instalacion)
 const bodyParser = require('body-parser');
 
 // body-parser: parse application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.urlencoded({ extended: false }));
 
 // body-parser: parse application/json
-app.use(bodyParser.json())
+app.use(bodyParser.json());
 
-//implementar peticiones get, post, put y delete para una misma url
-app.get('/usuario', function(req, res) {
-    res.json('get usuario');
-});
+app.use(require('./routes/usuario'));
 
-app.post('/usuario', function(req, res) {
-    let body = req.body;
+// mongoose.connect('mongodb://localhost:27017/cafe', (err, resp) => {
+//     if (err) throw err;
+//     console.log('Base de Datos ONLINE');
+// });
 
-    if (body.nombre === undefined) {
-        res.status(400).json({
-            ok: false,
-            mensaje: 'El nombre es necesario'
-        });
-    } else {
-        res.json({
-            persona: body
-        });
-    }
-});
+mongoose.connect(process.env.URLDB)
+    .then(console.log('Base de Datos ONLINE'))
+    .catch(err => console.log('No se pudo abrir base de datos  ', err));
 
-
-//para pasar parametros en la url usando 'put' se implementa: '/:<parametro>'
-app.put('/usuario/:id', function(req, res) {
-    let id = req.params.id; //'req.params.id' indexa el parametro 'id'
-    res.json({
-        id
-    });
-});
-
-app.delete('/usuario', function(req, res) {
-    res.json('delete usuario');
-});
 
 app.listen(process.env.PORT, () => {
     console.log(`Escuchando en puerto: ${process.env.PORT}`);
