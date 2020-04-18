@@ -17,7 +17,8 @@ let urlDB; // contendra la cadena de conexion correcta
 if (process.env.NODE_ENV === 'dev') {
     urlDB = 'mongodb://localhost:27017/cafe';
 } else {
-    urlDB = 'urlmongodb+srv://nodemongouser:ZkRf7AH4owTFhQET@cluster0-pp78t.mongodb.net/cafe';
+    // process.env.MONGO_URI contiene la canera de conexion a BD de produccion
+    urlDB = process.env.MONGO_URI;
 }
 
 //exportar a variable global la cadena de conexion a la BD
