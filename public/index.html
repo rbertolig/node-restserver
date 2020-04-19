@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Sign-In Demo</title>
+
+    <!--Informacion sobre el servicio en: https://developers.google.com/identity/sign-in/web/sign-in-->
+    <!-- incluir libreria de plataforma API google-->
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+
+    <!-- Especificar el APP ID de Google Asignado a nuestra aplicacion-->
+    <meta name="google-signin-client_id" content="387222356332-bgjhsomhos529h40arq9dpe2jcutr41c.apps.googleusercontent.com">
+</head>
+
+<body>
+    <div class="g-signin2" data-onsuccess="onSignIn"></div>
+
+    <script>
+        // funcion de Google para conseguir el perfil del usuario
+        function onSignIn(googleUser) {
+            var profile = googleUser.getBasicProfile();
+            console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+            console.log('Name: ' + profile.getName());
+            console.log('Image URL: ' + profile.getImageUrl());
+            console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+
+            //Obtener ID_TOKEN de google para el usuario logueado
+            var id_token = googleUser.getAuthResponse().id_token;
+            console.log(id_token);
+
+
+            // enviar google-token a nuestro server usando un POST via HTTPS
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/google');
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.onload = function() {
+                console.log('Signed in as: ' + xhr.responseText);
+            };
+            xhr.send('idtoken=' + id_token);
+
+
+        };
+    </script>
+
+    <!-- Implementacion de Google Sign-Out-->
+    <a href="#" onclick="signOut();">Sign out</a>
+    <script>
+        function signOut() {
+            var auth2 = gapi.auth2.getAuthInstance();
+            auth2.signOut().then(function() {
+                console.log('User signed out.');
+            });
+        }
+    </script>
+
+</body>
+
+</html>

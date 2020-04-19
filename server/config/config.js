@@ -38,3 +38,8 @@ if (process.env.NODE_ENV === 'dev') {
 
 //exportar a variable global la cadena de conexion a la BD
 process.env.URLDB = urlDB;
+
+//===================
+// Google CLIENT_ID
+//===================
+process.env.CLIENT_ID = process.env.CLIENT_ID || '387222356332-bgjhsomhos529h40arq9dpe2jcutr41c.apps.googleusercontent.com'
