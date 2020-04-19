@@ -11,13 +11,17 @@ const _ = require('underscore');
 // la constante 'Usuario' sera aqui la tabla usuario de la BD
 const Usuario = require('../models/usuario');
 
+//importar funcion de validacion de token
+const { verificaToken, verificaAdmin_Role } = require('../middlewares/autenticacion');
+
 //definir app como objeto de Express
 const app = express();
 
 
 //implementar peticiones GET para ruta /usuario
-app.get('/usuario', function(req, res) {
-
+//se incluye funcion 'middleware' verificaToken usada para
+//proteger que la ruta se ejecute mientras el middleware valida la sesion activa con comando 'next()'
+app.get('/usuario', verificaToken, (req, res) => {
     // obtener parametro'desde' para indicar record inicial
     // como 'desde' llega en texto uso Number() para convertirlo y si falla entonces es 0
     let desde = Number(req.query.desde) || 0;
@@ -52,7 +56,7 @@ app.get('/usuario', function(req, res) {
 });
 
 //implementar peticiones POST para ruta /usuario
-app.post('/usuario', function(req, res) {
+app.post('/usuario', [verificaToken, verificaAdmin_Role], (req, res) => {
     // leo parametros desde 'body' en la web y lo asigno a variable 'body'
     let body = req.body;
 
@@ -91,7 +95,7 @@ app.post('/usuario', function(req, res) {
 //implementar peticiones PUT para ruta /usuario
 //se usa para actualizar registros en este caso a la tabla Usuarios
 //para pasar parametros en la url usando 'put' se implementa: '/:<parametro>'
-app.put('/usuario/:id', function(req, res) {
+app.put('/usuario/:id', [verificaToken, verificaAdmin_Role], (req, res) => {
     //'req.params.id' contiene el parametro 'id' dentro de la url
     let id = req.params.id;
 
@@ -126,7 +130,7 @@ app.put('/usuario/:id', function(req, res) {
 //implementar peticiones DELETE para ruta /usuario. NO lo borraremos,
 //se realiza actualizando a falso un campo que representa el estado
 //se extre el ID de usuario de la URL: '/:<parametro>'
-app.delete('/usuario/:id', function(req, res) {
+app.delete('/usuario/:id', [verificaToken, verificaAdmin_Role], (req, res) => {
     //'req.params.id' contiene el parametro 'id' dentro de la url
     let id = req.params.id;
 
@@ -161,7 +165,7 @@ app.delete('/usuario/:id', function(req, res) {
 //no se recomienda hacer eliminaciones, desabilitar los registros 
 //mediante un campo destinado a al 'status'
 //implementar peticiones DELETE para ruta /usuario
-app.delete('/usuario/:id', function(req, res) {
+app.delete('/usuario/:id', verificaToken, (req, res) => {
     let id = req.params.id;
     Usuario.findByIdAndRemove(id, (err, usuarioBorrado) => {
         // si ocurre error indicarlo y abortar funcion
