@@ -51,7 +51,6 @@ let usuarioSchema = new Schema({
 //para convertir el record Usuario en un objeto y quitarle el campo password
 //esto se usa para no visualizar nada en relacion a la clave
 usuarioSchema.methods.toJSON = function() {
-
     let user = this; // variable 'user' se carga con paarametro que recibio la llamda a 'toJSON' 
     let userObject = user.toObject(); //asigna version objeto de variable 'user' a variable 'userObject'
     delete userObject.password; // borra todo el parametro 'password' dentro de 'userObject'
@@ -60,6 +59,6 @@ usuarioSchema.methods.toJSON = function() {
     return userObject;
 }
 
-usuarioSchema.plugin(uniqueValidator, { message: '{PATH} ya existe un usuario registrado con ese email' })
+usuarioSchema.plugin(uniqueValidator, { message: '{PATH} ya existe un usuario registrado con ese email' });
 
 module.exports = mongoose.model('Usuario', usuarioSchema);

@@ -63,7 +63,7 @@ app.post('/usuario', [verificaToken, verificaAdmin_Role], (req, res) => {
     //variable 'usuario' es el record en que se trabajara
     // esto lo llena con la estructura del record definida en tabla 'Usuario'
     // al mismo tiempo que le asigna los valores leidos en 'body'
-    let usuario = Usuario({
+    let usuario = new Usuario({
         nombre: body.nombre,
         email: body.email,
         //encriptar clave usando 'bcrypt.hashSync(clave,<# de veces a aplicar al hash>)'
@@ -85,7 +85,7 @@ app.post('/usuario', [verificaToken, verificaAdmin_Role], (req, res) => {
         // como modificamos el metodo toJSON de la tabla usuario
         // no se manda via browser nada del campo 'password'
         // ver model 'usuario' mdificacion de toJSON()
-        res.json({
+        res.status(201).json({
             ok: true,
             usuario: usuarioDB
         });
@@ -105,9 +105,7 @@ app.put('/usuario/:id', [verificaToken, verificaAdmin_Role], (req, res) => {
     //scanear tabla usuario que aqui es  el objeto 'Usuario' para encontrar 
     //el record ( 'usuario' ) con ID solicitado 
     // y lo actualiza de una vez con el contenido del objeto 'body'
-    Usuario.findByIdAndUpdate(id, body, {
-        new: true
-    }, (err, usuarioDB) => {
+    Usuario.findByIdAndUpdate(id, body, { new: true, runValidators: true }, (err, usuarioDB) => {
         // si ocurre error indicarlo y abortar funcion
         if (err) {
             return res.status(400).json({

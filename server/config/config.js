@@ -20,8 +20,8 @@ process.env.TOKEN_SEED = process.env.TOKEN_SEED || 'este-es-el-secret-de-desarro
 //===================
 // Expiracion del Token ( en segundos )
 //===================
-// 30 dias 
-process.env.CADUCIDAD_TOKEN = 60 * 60 * 24 * 30;
+// 48 horas 
+process.env.CADUCIDAD_TOKEN = '48h';
 
 
 //===========================================

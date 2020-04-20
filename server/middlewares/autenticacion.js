@@ -38,6 +38,7 @@ let verificaAdmin_Role = (req, res, next) => {
     //si el role del uauario es ADMIN_ROLE entonces validar middleware con next()
     if (usuario.role === 'ADMIN_ROLE') {
         next();
+        return true;
     } else {
         //sino no se valida con next() y se retorna un error de validacion
         return res.status(401).json({
