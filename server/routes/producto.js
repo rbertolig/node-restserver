@@ -129,15 +129,25 @@ app.get('/productos/buscar/:termino', verificaToken, (req, res) => {
                     }
                 });
             }
-            // si llega aqui resolver registro encontrado
-            return res.json({
-                ok: true,
-                producto: productoDB
+            Producto.countDocuments({ nombre: regex }, (err, conteo) => {
+                //si hay error del servidor indicarlo y abortar
+                if (err) {
+                    return res.status(500).json({
+                        ok: false,
+                        err
+                    });
+                }
+                // si llega aqui resolver registro encontrado
+                return res.json({
+                    ok: true,
+                    producto: productoDB,
+                    cantidad: conteo
+                });
+
             });
         });
+
 });
-
-
 
 // ===============================================
 // Servicio ( Ruta POST ): Crear un  producto

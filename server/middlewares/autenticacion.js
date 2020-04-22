@@ -28,6 +28,32 @@ let verificaToken = (req, res, next) => {
     });
 };
 
+//==========================================
+//Verificar Token recibido en parametro URL
+//==========================================
+let verificaTokenEnUrl = (req, res, next) => {
+    //leer el token desde la url
+    let token = req.query.token;
+    //verificar que el token es valido
+    // la variable 'decoded' contendra el 'payload'
+    jwt.verify(token, process.env.TOKEN_SEED, (err, decoded) => {
+        //si ocurre error abortar con return indicando el error   
+        if (err) {
+            return res.status(401).json({
+                ok: false,
+                err: {
+                    message: 'No ha iniciado sesion o su session ha expirado'
+                }
+            });
+        }
+        // si llega aqui no hubo error
+        // asignar a 'req.usuario' el usuario extraido del payload en el token
+        req.usuario = decoded.usuario;
+        //finalmente validar con comando next() para que el middleware de luz verde al codigo que lo llamo
+        next();
+    });
+};
+
 //======================
 //Verificar AdminRole
 //======================
@@ -53,5 +79,6 @@ let verificaAdmin_Role = (req, res, next) => {
 
 module.exports = {
     verificaToken,
-    verificaAdmin_Role
+    verificaAdmin_Role,
+    verificaTokenEnUrl
 }

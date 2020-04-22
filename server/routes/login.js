@@ -89,12 +89,6 @@ async function verify(token) {
     });
     // conseguir el payload dentro del token
     const payload = ticket.getPayload();
-
-    //visualizar en consola payload obtenido
-    // console.log(payload.name);
-    // console.log(payload.email);
-    // console.log(payload.picture);
-
     // retornar el objeto json del usuario autenticado
     return {
         nombre: payload.name,
